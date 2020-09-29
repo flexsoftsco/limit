@@ -10,8 +10,8 @@ from frappe.utils.__init__ import get_site_info
 import os, subprocess, json
 from six.moves.urllib.parse import parse_qsl, urlsplit, urlunsplit, urlencode
 from six import string_types
-from frappe.handler import web_logout
-from frappe.auth import LoginManager
+from frappe.handler import logout
+# from frappe.auth import LoginManager
 
 class SiteExpiredError(frappe.ValidationError):
 	http_status_code = 417
@@ -29,28 +29,22 @@ def check_if_expired():
 
 	if not expiry:
 		return
-	print('reached')
 	expires_on = formatdate(limits.get("expiry"))
 	support_email = limits.get("support_email")
 	support_phone = limits.get("support_phone")
-	print(expires_on,support_email)
 	
 	if support_email and support_phone:
-		message = _("""Your subscription for {0} has expired on {1}. To renew, Email us : {2} or Contact us : {3}""").format(frappe.local.site,expires_on,support_email,support_phone)
+		message = _("""Your subscription for {0} has expired on {1}. <br>To renew, Email us : <b>{2}</b> or <br>Contact us : <b>{3}</b>""").format(frappe.local.site,expires_on,support_email,support_phone)
 
 	elif support_email:
-		message = _("""Your subscription for {0} has expired on {1}. To renew, Email us : {2}""").format(frappe.local.site,expires_on,support_email)
+		message = _("""Your subscription for {0} has expired on {1}. <br>To renew, Email us : <b>{2}</b>""").format(frappe.local.site,expires_on,support_email)
 
 	else:
 		# no recourse just quit
 		return
 	
-	# frappe.throw(message, SiteExpiredError)
-	frappe.msgprint(msg=message,title='Subscription Expired',raise_exception=SiteExpiredError)
-	
-	# frappe.app.logout()
-	# LoginManager().logout()
-	# web_logout()
+	frappe.throw(msg=message,title='Subscription Expired', exc=SiteExpiredError)
+	logout()
 
 def has_expired():
 	if frappe.session.user=="Administrator":
@@ -60,9 +54,6 @@ def has_expired():
 	print('expires_on',expires_on)
 	if not expires_on:
 		return False
-	print('getdate(expires_on)',getdate(expires_on))
-	print(now_datetime().date())
-	print(now_datetime().date() <= getdate(expires_on))
 	if now_datetime().date() <= getdate(expires_on):
 		return False
 
@@ -132,8 +123,8 @@ def get_usage_info():
 		usage_info['expires_on'] = formatdate(limits.expiry)
 		usage_info['days_to_expiry'] = (getdate(limits.expiry) - getdate()).days
 
-	if limits.upgrade_url:
-		usage_info['upgrade_url'] = get_upgrade_url(limits.upgrade_url)
+	# if limits.upgrade_url:
+	# 	usage_info['upgrade_url'] = get_upgrade_url(limits.upgrade_url)
 
 	return usage_info
 
@@ -207,11 +198,14 @@ def validate_space_limit(file_size):
 
 	if flt(flt(usage.total) + file_size, 2) > space_limit:
 		# Stop from attaching file
-		frappe.throw(_("You have exceeded the max space of {0} for your plan. {1}.").format(
-			"<b>{0}MB</b>".format(cint(space_limit)) if (space_limit < 1024) else "<b>{0}GB</b>".format(limits.space),
-			'<a href="https://flexsofts.com/contact">{0}</a>'.format(_("Click here to contact us."))),
-			MaxFileSizeReachedError)
-
+		# frappe.throw(_("You have exceeded the max space of {0} for your plan. {1}.").format(
+		# 	"<b>{0}MB</b>".format(cint(space_limit)) if (space_limit < 1024) else "<b>{0}GB</b>".format(limits.space),
+		# 	'<a href="https://flexsofts.com/contact">{0}</a>'.format(_("Click here to contact us."))),
+		# 	MaxFileSizeReachedError)
+		message =_("You have exceeded the max space of {0} for your plan. {1}.").format(
+		"<b>{0}MB</b>".format(cint(space_limit)) if (space_limit < 1024) else "<b>{0}GB</b>".format(limits.space),
+		'Contact us on email <b>{0}</b> or phone <b>{1}</b>'.format(limits.support_email,limits.support_phone))
+		frappe.throw(msg=message,title='Space Usage Limit Reached', exc=MaxFileSizeReachedError)
 	# update files size in frappe subscription
 	usage.files_size = flt(usage.files_size) + file_size
 	update_limits({ 'space_usage': usage })

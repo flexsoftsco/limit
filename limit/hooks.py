@@ -78,7 +78,7 @@ app_license = "MIT"
 # Document Events
 # ---------------
 # Hook on document methods and events
-on_session_creation=["limit.limits.check_if_expired"]
+on_login=["limit.limits.check_if_expired"]
 boot_session = "limit.api.update_boot_with_limits"
 
 
@@ -101,9 +101,10 @@ scheduler_events = {
 		"limit.utils.scheduler.disable_scheduler_on_expiry",
         "limit.api.mute_emails_on_email_limit_reached"
 	],
-	# "hourly": [
-	# 	"limit.tasks.hourly"
-	# ],
+	"hourly": [
+        "limit.limits.update_space_usage"
+		"limit.limits.update_site_usage"
+	]
 	# "weekly": [
 	# 	"limit.tasks.weekly"
 	# ]

@@ -34,15 +34,10 @@ def validate_user_limit(self,method):
 			# get_total_users gets existing users in database
 			# a new record isn't inserted yet, so adding 1
 			total_users += 1
-		print('---'*100)
-		print('total_users',total_users,'limits.users',limits.users)
 		if total_users > limits.users:
-
-			# frappe.throw(_("Sorry. You have reached the maximum user limit for your subscription. You can either disable an existing user or buy a higher subscription plan."),
-			# 	MaxUsersReachedError)
-
-			frappe.throw(_("Sorry. You have reached the maximum user limit of <b> {0} </b> for your subscription. You can either disable an existing user or {1} ").format(cint(limits.users),
-				'Contact us on email {0} or phone'.format(limit.support_email,limit.support_phone)),MaxUsersReachedError)				
+			message =_("Sorry. You have reached the maximum user limit of <b> {0} </b> for your subscription.<br> You can either disable an existing user or <br>{1} ").format(cint(limits.users),
+				'Contact us on email <b>{0}</b> or phone <b>{1}</b>'.format(limits.support_email,limits.support_phone))	
+			frappe.throw(msg=message,title='User Subscription Limit Reached', exc=MaxUsersReachedError)			
 
 def get_total_users():
 	from frappe.core.doctype.user.user import STANDARD_USERS
@@ -74,23 +69,17 @@ def check_email_limit(recipients):
 	# if using settings from site_config.json, check email limit
 	# No limit for own email settings
 	smtp_server = SMTPServer()
-	print('smtp_server.email_account',smtp_server.email_account,frappe.flags.in_test)
 
 	if (smtp_server.email_account
 		or frappe.flags.in_test):
-		print('inside2'*10)
 		monthly_email_limit = frappe.conf.get('limits', {}).get('emails')
 		daily_email_limit = cint(frappe.conf.get('limits', {}).get('daily_emails'))
-		print('monthly_email_limit',monthly_email_limit,get_emails_sent_this_month(),len(recipients))
 		if frappe.flags.in_test:
 			monthly_email_limit = 500
 			daily_email_limit = 50
-		print(daily_email_limit,'daily_email_limit')
 		if daily_email_limit:
 			# get count of sent mails in last 24 hours
-			print('get_emails_sent_today()',get_emails_sent_today())
 			today = get_emails_sent_today()
-			print(today,daily_email_limit,'daily_email_limit')
 			if (today + len(recipients)) > daily_email_limit:
 				throw(_("Cannot send this email. You have crossed the sending limit of {0} emails for this day.").format(daily_email_limit),
 					EmailLimitCrossedError)
@@ -100,8 +89,6 @@ def check_email_limit(recipients):
 
 		# get count of mails sent this month
 		this_month = get_emails_sent_this_month()
-		print('--'*90)
-		print(this_month,len(recipients),monthly_email_limit)
 		if (this_month + len(recipients)) > monthly_email_limit:
 			throw(_("Cannot send this email. You have crossed the sending limit of {0} emails for this month.").format(monthly_email_limit),
 				EmailLimitCrossedError)		             
