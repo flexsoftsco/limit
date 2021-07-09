@@ -140,6 +140,7 @@ def get_upgrade_url(upgrade_url):
 
 	query = urlencode(params, doseq=True)
 	url = urlunsplit((parts.scheme, parts.netloc, parts.path, query, parts.fragment))
+
 	return url
 
 def get_upgrade_link(upgrade_url, label=None):
