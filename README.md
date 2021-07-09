@@ -9,14 +9,17 @@ Limit Frappe Erpnext usage
 </ul>
 
 ### set usage limits : can be done only user 'Administrator'
-Set Usage Limit : https://site.com/app/set-limit
+Set Usage Limit : 
+v13 URL : https://site.com/app/set-limit
+v12 URL : http://site.com/desk#Form/Set%20Limit
 <ul>
 <li>When not using a particular limit restriction, increase its value to a high no. Ex no. of users = 1000 </li>
 <li>Uninstall the limit app if not using restrictions/li>
 </ul>
 
 ### Usage information
-http://site.com/desk#usage-info
+v13 URL : https://site.com/app/usage-info
+v12 URL : http://site.com/desk#usage-info
 Link is made visible under user icon (top right corner) , last option 'Dashboard Usage' (before logout)
 
 ### site_config.json, will be updated via set limit doctype
