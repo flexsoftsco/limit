@@ -36,9 +36,9 @@ class SetLimit(Document):
 	def set_set_limits_in_site_config(self):
 		from frappe.installer import update_site_config
 		# delete set_limit key first
-		update_site_config("set_limits",value="None",validate=False)
+		update_site_config("limits",value="None",validate=False)
 		# set fresh set_limits
-		update_site_config("set_limits", self.get_set_limits(), validate=False)
+		update_site_config("limits", self.get_set_limits(), validate=False)
 
 	def get_set_limits(self):
 		set_limits={
