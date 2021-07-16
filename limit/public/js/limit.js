@@ -8,6 +8,6 @@ $(document).ready(function(){
   // v12 link
   setTimeout(() => {
     $('#toolbar-user').append('<li class="divider"></li><li><a href="/desk#usage-info">       Dashboard Usage</a></li>')
-  }, 200);
-  
+  }, 400);
+
 });
