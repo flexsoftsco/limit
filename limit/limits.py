@@ -47,7 +47,7 @@ def check_if_expired():
 	logout()
 
 def has_expired():
-	if frappe.session.user=="Administrator":
+	if frappe.session.user=="Administrator"  or frappe.form_dict.get('usr').lower()=='administrator':
 		return False
 
 	expires_on = get_limits().expiry
@@ -86,7 +86,7 @@ def get_expiry_message():
 			message = _("Your subscription will expire on {0}.").format(formatdate(expires_on))
 
 	if message and limits.support_email:
-		upgrade_link = get_upgrade_link(limits.upgrade_url)
+		# upgrade_link = get_upgrade_link(limits.upgrade_url)
 		message += ' ' + _('To renew, email {0} or contact {1}').format(limits.support_email,limits.support_phone)
 
 	return message
