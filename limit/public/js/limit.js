@@ -1,13 +1,7 @@
-$(document).ready(function(){
-
+$(document).on('toolbar_setup',function(){
   // v13 link
-  setTimeout(() => {
-    $('.dropdown-menu-right#toolbar-user').append('<div class="dropdown-divider"></div><a class="dropdown-item" href="/app/usage-info">           Dashboard Usage          </a>')
-  }, 200);
+  $('.dropdown-menu-right#toolbar-user').append('<div class="dropdown-divider"></div><a class="dropdown-item" href="/app/usage-info">           Usage Info          </a>')
 
   // v12 link
-  setTimeout(() => {
-    $('#toolbar-user').append('<li class="divider"></li><li><a href="/desk#usage-info">       Dashboard Usage</a></li>')
-  }, 400);
-
+  $('#toolbar-user').append('<li class="divider"></li><li><a href="/desk#usage-info">       Usage Info</a></li>')
 });
