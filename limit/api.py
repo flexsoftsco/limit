@@ -30,6 +30,8 @@ def validate_user_limit(self,method):
 			return
 
 		total_users = get_total_users()
+		if total_users==None:
+			total_users=0
 		if self.is_new():
 			# get_total_users gets existing users in database
 			# a new record isn't inserted yet, so adding 1
