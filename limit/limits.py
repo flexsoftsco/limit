@@ -47,7 +47,7 @@ def check_if_expired():
 	logout()
 
 def has_expired():
-	if frappe.session.user=="Administrator"  or frappe.form_dict.get('usr').lower()=='administrator':
+	if frappe.session.user=="Administrator"  or (frappe.form_dict.get('usr') and frappe.form_dict.get('usr').lower()=='administrator'):
 		return False
 
 	expires_on = get_limits().expiry
