@@ -1,12 +1,12 @@
 # Copyright (c) 2021, GreyCube Technologies and contributors
 # For license information, please see license.txt
 
+from datetime import date, timedelta
 import frappe
 from frappe import _
 from frappe.model.document import Document
 from frappe.utils import getdate,  nowdate
 from frappe.commands.utils import set_config
-
 
 class SetLimit(Document):
 	def onload(self):
@@ -17,6 +17,11 @@ class SetLimit(Document):
 	def validate(self):
 		self.validate_all_field_values()
 		self.set_set_limits_in_site_config()
+		# Your custom expiry date check
+        	if self.expiry:  # Ensure site_expiry is set
+            		expiry_date = getdate(self.expiry)
+            		if expiry_date < getdate(nowdate()) + timedelta(days=15):
+                		frappe.throw("Expiry date is less than 15 days away.", title='Expiry Date Alert')
 
 	def validate_all_field_values(self):	
 		if self.no_of_user <=0:
