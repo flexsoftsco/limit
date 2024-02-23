@@ -17,11 +17,14 @@ class SetLimit(Document):
 	def validate(self):
 		self.validate_all_field_values()
 		self.set_set_limits_in_site_config()
-		# Your custom expiry date check
-        	if self.expiry:  # Ensure site_expiry is set
-            		expiry_date = getdate(self.expiry)
-            	if expiry_date < getdate(nowdate()) + timedelta(days=15):
-                	frappe.throw("Expiry date is less than 15 days away.", title='Expiry Date Alert')
+        
+        # Your custom expiry date check
+        if self.site_expiry:  # Ensure site_expiry is set
+            expiry_date = getdate(self.site_expiry)
+            if expiry_date < getdate(nowdate()) + timedelta(days=15):
+                frappe.throw("Expiry date is less than 15 days away.", title='Expiry Date Alert')
+
+
 
 	def validate_all_field_values(self):	
 		if self.no_of_user <=0:
