@@ -10,10 +10,14 @@ from frappe.commands.utils import set_config
 
 class SetLimit(Document):
 	def onload(self):
+		expiry_date = getdate(self.site_expiry)  # Assuming 'self.expiry' holds the expiry date
 		if frappe.session.user!='Administrator':
 			frappe.local.flags.redirect_location = 'app/home'
-			raise frappe.Redirect			
-
+			raise frappe.Redirect
+		if expiry_date < getdate(nowdate()) + timedelta(days=15):
+			# Set a flag in the user's session or a custom field indicating the expiry warning
+			frappe.local.session['expiry_warning'] = True
+					
 	def validate(self):
 		self.validate_all_field_values()
 		self.set_set_limits_in_site_config()
