@@ -20,8 +20,8 @@ class SetLimit(Document):
 		# Your custom expiry date check
         	if self.expiry:  # Ensure site_expiry is set
             		expiry_date = getdate(self.expiry)
-            		if expiry_date < getdate(nowdate()) + timedelta(days=15):
-                		frappe.throw("Expiry date is less than 15 days away.", title='Expiry Date Alert')
+            	if expiry_date < getdate(nowdate()) + timedelta(days=15):
+                	frappe.throw("Expiry date is less than 15 days away.", title='Expiry Date Alert')
 
 	def validate_all_field_values(self):	
 		if self.no_of_user <=0:
